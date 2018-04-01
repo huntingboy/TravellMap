@@ -3,33 +3,30 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
+            android:id="@+id/nav_checkin"
+            android:icon="@mipmap/ic_menu_checkin"
+            android:title="@string/navigation_menu_checkin" />
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
+            android:id="@+id/nav_geofence"
+            android:icon="@mipmap/ic_menu_geofence"
+            android:title="@string/navigation_menu_geofence" />
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:id="@+id/nav_friend"
+            android:icon="@mipmap/ic_menu_friend"
+            android:title="@string/navigation_menu_friend" />
+
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="@string/navigation_menu_around">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+                android:id="@+id/nav_scene"
+                android:icon="@mipmap/ic_menu_scene"
+                android:title="@string/navigation_menu_scene" />
             <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:id="@+id/nav_restaurateur"
+                android:icon="@mipmap/ic_menu_restaurateur"
+                android:title="@string/navigation_menu_restaurateur" />
         </menu>
     </item>
 

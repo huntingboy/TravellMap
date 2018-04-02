@@ -48,8 +48,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginActivity"
-            android:label="@string/title_activity_login"></activity>
+            android:name="com.nomad.login.LoginActivity"
+            android:label="@string/title_activity_login" />
+        <activity
+            android:name="com.nomad.search.SearchActivity"
+            android:label="@string/title_activity_search"/>
     </application>
 
 </manifest>

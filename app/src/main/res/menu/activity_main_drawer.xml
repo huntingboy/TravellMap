@@ -4,29 +4,36 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_checkin"
-            android:icon="@mipmap/ic_menu_checkin"
+            android:icon="@android:drawable/ic_menu_today"
             android:title="@string/navigation_menu_checkin" />
         <item
             android:id="@+id/nav_geofence"
-            android:icon="@mipmap/ic_menu_geofence"
+            android:icon="@android:drawable/btn_radio"
             android:title="@string/navigation_menu_geofence" />
         <item
             android:id="@+id/nav_friend"
-            android:icon="@mipmap/ic_menu_friend"
+            android:icon="@drawable/ic_menu_friend"
             android:title="@string/navigation_menu_friend" />
-
     </group>
 
     <item android:title="@string/navigation_menu_around">
         <menu>
             <item
                 android:id="@+id/nav_scene"
-                android:icon="@mipmap/ic_menu_scene"
+                android:icon="@drawable/ic_menu_scene"
                 android:title="@string/navigation_menu_scene" />
             <item
                 android:id="@+id/nav_restaurateur"
-                android:icon="@mipmap/ic_menu_restaurateur"
+                android:icon="@drawable/ic_menu_restaurateur"
                 android:title="@string/navigation_menu_restaurateur" />
+            <item
+                android:id="@+id/nav_hotel"
+                android:icon="@drawable/ic_menu_hotel"
+                android:title="@string/navigation_menu_hotel" />
+            <item
+                android:id="@+id/nav_bank"
+                android:icon="@drawable/ic_menu_bank"
+                android:title="@string/navigation_menu_bank" />
         </menu>
     </item>
 

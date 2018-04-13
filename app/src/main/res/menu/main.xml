@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <item
-        android:id="@+id/action_search"
-        android:orderInCategory="100"
-        android:title="@string/action_search"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_addfriend"
-        android:orderInCategory="100"
-        android:title="@string/action_addfriend"
-        app:showAsAction="never" />
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+        <item
+            android:id="@+id/action_search"
+            android:icon="@drawable/ic_menu_search"
+            android:title="@string/action_search"
+            />
+        <item
+            android:id="@+id/action_sharelocation"
+            android:icon="@drawable/ic_share"
+            android:title="@string/action_sharelocation"
+            />
 </menu>

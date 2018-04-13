@@ -1,68 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.nomad.search.SearchActivity">
+    android:layout_height="match_parent">
 
-    <com.nomad.view.ClearEditText
-        android:maxLines="1"
-        android:id="@+id/edit_search"
-        android:layout_width="246dp"
-        android:layout_height="0dp"
-        android:hint="@string/search_hint"
-        app:layout_constraintTop_toTopOf="@+id/bt_search"
-        android:layout_marginTop="3dp"
-        app:layout_constraintBottom_toBottomOf="@+id/bt_search"
-        android:layout_marginBottom="3dp"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintBottom_creator="1"
-        android:layout_marginStart="7dp"
-        tools:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="7dp"
-        app:layout_constraintVertical_bias="0.0" />
+    <LinearLayout
+        android:id="@+id/line_search"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+        <com.nomad.view.ClearEditText
+            android:maxLines="1"
+            android:id="@+id/edit_search"
+            android:layout_width="0dp"
+            android:layout_weight="4"
+            android:layout_height="wrap_content"
+            android:hint="@string/search_hint" />
+        <Button
+            android:id="@+id/bt_search"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="#d6d7d7"
+            android:text="@string/search_ack"
+            android:layout_marginEnd="5dp" />
 
-    <Button
-        android:id="@+id/bt_search"
-        android:layout_width="88dp"
-        android:layout_height="48dp"
-        android:layout_toEndOf="@+id/edit_search"
-        android:background="#d6d7d7"
-        android:text="@string/search_ack"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintRight_creator="1"
-        android:layout_marginStart="1dp"
-        android:layout_marginEnd="4dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="9dp"
-        tools:layout_constraintLeft_creator="1"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/edit_search"
-        app:layout_constraintHorizontal_bias="0.086" />
-    <Button
-        android:id="@+id/bt_next"
-        android:layout_width="88dp"
-        android:layout_height="48dp"
-        android:background="#d6d7d7"
-        android:text="@string/search_next"
-        app:layout_constraintLeft_toRightOf="@+id/bt_search"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginLeft="2dp"
-        android:layout_marginTop="9dp"
-        android:layout_marginStart="2dp" />
+        <Button
+            android:id="@+id/bt_next"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:background="#d6d7d7"
+            android:text="@string/search_next" />
+
+
+    </LinearLayout>
+
+
     <ListView
         android:id="@+id/lv_poi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
         android:divider="@null"
         android:dividerHeight="@dimen/lv_divider_height"
-        app:layout_constraintTop_toBottomOf="@+id/edit_search"
-        tools:layout_editor_absoluteX="5dp"
-        android:layout_marginTop="-2dp"
-        android:layout_marginStart="5dp"
-        tools:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        android:layout_below="@id/line_search" />
 
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>

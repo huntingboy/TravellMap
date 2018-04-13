@@ -28,7 +28,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <meta-data
@@ -40,6 +40,7 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -52,7 +53,21 @@
             android:label="@string/title_activity_login" />
         <activity
             android:name="com.nomad.search.SearchActivity"
-            android:label="@string/title_activity_search"/>
+            android:label="@string/title_activity_search" />
+        <activity
+            android:name="com.nomad.geofence.GeoFenceActivity"
+            android:label="@string/title_activity_fence" />
+        <activity
+            android:name="com.nomad.friend.FriendActivity"
+            android:label="@string/title_activity_friend" />
+        <activity
+            android:name="com.nomad.around.AroundActivity"
+            android:label="@string/title_activity_scene" />
+        <activity
+            android:name="com.nomad.checkin.CheckinActivity"
+            android:label="@string/title_activity_checkin"
+            android:theme="@android:style/Theme.Holo.Light.Dialog" />
+        <activity android:name="com.nomad.profile.ProfileActivity"></activity>
     </application>
 
 </manifest>

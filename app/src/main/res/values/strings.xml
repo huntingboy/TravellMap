@@ -1,12 +1,11 @@
 <resources>
-    <string name="app_name">TravellMap</string>
+    <string name="app_name">旅游地图</string>
     <string name="title_activity_login">登录</string>
-    <string name="title_activity_search">搜索</string>
+    <string name="title_activity_search">搜索POI</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_addfriend">加好友</string>
     <string name="search_hint">搜索</string>
     <string name="search_ack">搜索</string>
     <string name="action_search">搜索</string>
@@ -15,15 +14,13 @@
     <string name="navigation_head_name">欢迎你，请先登录！！！</string>
     <string name="navigation_menu_checkin">位置签到</string>
     <string name="navigation_menu_geofence">地理围栏</string>
-    <string name="navigation_menu_friend">我的好友</string>
+    <string name="navigation_menu_friend">好友管理</string>
     <string name="navigation_menu_around">附近</string>
     <string name="navigation_menu_scene">景点</string>
     <string name="navigation_menu_restaurateur">餐馆</string>
     <string name="navigation_foot_setting">设置</string>
     <string name="navigation_foot_loging">登录</string>
     <string name="navigation_foot_register">注销</string>
-
-
 
 
     <!-- Strings related to login -->
@@ -33,7 +30,7 @@
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_incorrect_password">This password is incorrect or the network is busy or the username is duplicated</string>
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
@@ -41,7 +38,40 @@
     <string name="search_next">下一页</string>
     <string name="marker_around_scene">周边景点</string>
     <string name="marker_around_restaurant">周边餐馆</string>
-    <string name="city_code">420000</string>
+    <string name="city_code"></string>
+    <string name="action_sharelocation">位置分享</string>
+
+
+    <string name="url_protocol">http</string>
+    <string name="url_host">n17459068v.iask.in</string>
+    <string name="url_port">33440</string>
+    <string name="url_path_user">map/UserServlet</string>
+    <string name="title_activity_fence">地理围栏</string>
+    <string name="title_activity_friend">好友管理</string>
+    <string name="title_activity_scene">周边</string>
+    <string name="title_activity_restaurant">周边餐馆</string>
+    <string name="title_tab1_fence">添加围栏</string>
+    <string name="title_tab2_fence">查看围栏</string>
+    <string name="title_tab1_friend">添加好友</string>
+    <string name="title_tab2_friend">查看好友</string>
+    <string name="text_username">用户名：</string>
+    <string name="text_authcode">验证码：</string>
+    <string name="bt_sendcode">获取验证码</string>
+    <string name="hint_username">example@qq.com</string>
+    <string name="hint_authcode">****</string>
+    <string name="bt_ack">确认</string>
+    <string name="bt_cancel">取消</string>
+    <string name="bt_codesended">验证码已发送</string>
+    <string name="url_path_friend">map/FriendServlet</string>
+    <string name="url_path_fence">map/FenceServlet</string>
+    <string name="text_latitude">纬度：</string>
+    <string name="title_activity_checkin">签到</string>
+    <string name="url_path_checkin">map/CheckinServlet</string>
+    <string name="bt_more">查看更多</string>
+    <string name="navigation_menu_hotel">酒店</string>
+    <string name="marker_around_hotel">周边酒店</string>
+    <string name="navigation_menu_bank">银行</string>
+    <string name="marker_around_bank">周边银行</string>
 
 
 </resources>

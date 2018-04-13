@@ -1,6 +1,9 @@
 apply plugin: 'com.android.application'
 
 android {
+
+    useLibrary 'org.apache.http.legacy'
+
     compileSdkVersion 27
     buildToolsVersion "27.0.3"
     defaultConfig {
@@ -39,12 +42,13 @@ dependencies {
     //    })
     //    testCompile 'junit:junit:4.12'
     /*    //3D地图so及jar
-                compile 'com.amap.api:3dmap:latest.integration'
-                //定位功能
-                compile 'com.amap.api:location:latest.integration'
-                //搜索功能
-                compile 'com.amap.api:search:latest.integration'*/
-    compile files('libs/AMap3DMap_6.0.1_AMapSearch_5.7.0_AMapLocation_3.8.0_20180309.jar')
+                                            compile 'com.amap.api:3dmap:latest.integration'
+                                            //定位功能
+                                            compile 'com.amap.api:location:latest.integration'
+                                            //搜索功能
+                                            compile 'com.amap.api:search:latest.integration'*/
+    compile files('libs/junit-4.12.jar')
+    compile files('libs/httpcore-4.4.4.jar')
     compile 'com.android.support:appcompat-v7:+'
     compile 'com.android.support:design:+'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'

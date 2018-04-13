@@ -3,6 +3,7 @@ package com.nomad.login;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -19,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,11 +30,23 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.nomad.travellmap.R;
+import com.nomad.web.HttpJson;
+
+
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -48,10 +62,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     /**
      * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
+     *
      */
+    private int i = 0;
     private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
+
     };
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -193,13 +208,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.contains("@");
+        return email.contains("@") && !email.contains(" ");
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return password.length() > 4 && !password.contains(" ");
     }
 
     /**
@@ -300,6 +313,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         private final String mEmail;
         private final String mPassword;
+        private final int RESULT_LOGIN_OK = 2;
 
         UserLoginTask(String email, String password) {
             mEmail = email;
@@ -308,24 +322,101 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
+            HttpParams httpParameters = new BasicHttpParams();
+            HttpConnectionParams.setConnectionTimeout(httpParameters, 10*1000);//设置请求超时10秒
+            HttpConnectionParams.setSoTimeout(httpParameters, 10*1000); //设置等待数据超时10秒
+            HttpConnectionParams.setSocketBufferSize(httpParameters, 8192);
+            HttpClient httpClient = new DefaultHttpClient(httpParameters);
 
+            String protocol = getResources().getString(R.string.url_protocol);
+            String host = getResources().getString(R.string.url_host);
+            String port = getResources().getString(R.string.url_port);
+            String path = getResources().getString(R.string.url_path_user);
+
+            //get方式提交
+            String url = protocol + "://" + host + ":" + port + "/" + path
+                    + "?" + "username=" + mEmail + "&password=" + mPassword + "&method=login";
+            Log.d("Amap", "get url===>" + url);
+            HttpJson httpJson = new HttpJson(url);
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
+                String stringJson = httpJson.doHttpGetJson();
+                Log.d("Amap", "服务器登录返回数据====》" + stringJson);
+                if (httpJson.getResultCode() != 200) {
+                    Log.d("Amap", "====LoginAcitivity->UserLoginTast->doInBackground()登录resultcode:" + httpJson.getResultCode());
+                    return false;
+                } else {
+                    //1.将Json数据中User解析出来 2.得到username和password放到DUMMY_CREDENTIALS数组中
+                    JSONObject jsonObject = new JSONObject(stringJson);
+                    String username = jsonObject.getString("username");
+                    String password = jsonObject.getString("password");
+                    //DUMMY_CREDENTIALS[i++] = username + ":" + password;
+                    if (username != null && password != null) {
+                        return true;
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            /**post方式
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("username", mEmail);
+                jsonObject.put("password", password);
+                String jsonString = jsonObject.toString();
+                String url = protocol + "://" + host + ":" + port + "/" + path
+                        + "/";
+                HttpJson httpJson = new HttpJson(jsonString, url);
+                String stringJson = httpJson.doHttpPostJson();
+                Log.d("Amap", "服务器登录返回数据====》" + stringJson);
+                if (httpJson.getResultCode() != 200) {
+                    Toast.makeText(LoginActivity.this, "错误代码：" + httpJson.getResultCode(), Toast.LENGTH_SHORT).show();
+                    return false;
+                } else {
+                    //1.将Json数据中User解析出来 2.得到username和password放到DUMMY_CREDENTIALS数组中
+                    JSONObject jsonObject = new JSONObject(stringJson);
+                    String username = jsonObject.getString("username");
+                    String password = jsonObject.getString("password");
+                    DUMMY_CREDENTIALS[0] = username + ":" + password;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }*/
+
+            //get方式提交
+            String url1 = protocol + "://" + host + ":" + port + "/" + path
+                    + "?" + "username=" + mEmail + "&password=" + mPassword + "&method=register";
+            Log.d("Amap", "get url1===>" + url1);
+            try {
+                HttpJson httpJson1 = new HttpJson(url1);
+                String stringJson = httpJson1.doHttpGetJson();
+                Log.d("Amap", "Loginactivity->userlogintast->doninbackground->服务器登录返回数据====》" + stringJson);
+                Log.d("Amap", "Loginactivity->userlogintast->doninbackground->结果状态码：" + httpJson.getResultCode());
+                if (httpJson.getResultCode() != 200) {
+                    Log.d("Amap", "====LoginAcitivity->UserLoginTast->doInBackground()注册resultcode:" + httpJson.getResultCode());
+                    return false;
+                } else {
+                    //1.将Json数据中User解析出来 2.得到username和password放到DUMMY_CREDENTIALS数组中
+                    JSONObject jsonObject = new JSONObject(stringJson);
+                    String username = jsonObject.getString("username");
+                    String password = jsonObject.getString("password");
+                    Log.d("Amap", "====LoginAcitivity->UserLoginTast->doInBackground()注册username=" + username + ",password=" + password);
+                    if (username == null || password == null) {
+                        return false;
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            } catch (JSONException e) {
+                Log.d("Amap", "注册结果：json解析错误，可能根据空对象构造json!");
+                e.printStackTrace();
                 return false;
             }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            // TODO: register the new account here.
             return true;
         }
 
@@ -335,6 +426,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
+                Toast.makeText(LoginActivity.this, "登录/注册成功！", Toast.LENGTH_SHORT).show();
+                //1.将用户名返回到MainAcitivity.java显示出来
+                Intent intent = new Intent();
+                Bundle bundle = new Bundle();
+                bundle.putString("username", mEmail);
+                intent.putExtra("bundle", bundle);
+                LoginActivity.this.setResult(RESULT_LOGIN_OK, intent);
                 finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));

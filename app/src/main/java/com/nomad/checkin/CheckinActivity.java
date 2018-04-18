@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class CheckinActivity extends Activity implements View.OnClickListener {
 
@@ -91,6 +92,7 @@ public class CheckinActivity extends Activity implements View.OnClickListener {
             case R.id.bt_ack_checkin:
                 //1.获取text,latitude,longitude,address  2.新开线程http get方式传送json数据 3.根据返回的结果执行相应操作
                 final String text = URLEncoder.encode(editCheckin.getText().toString().trim());
+                Log.d("Amap", "checkinactivity->onclick()===text:" + text);
                 final String address = URLEncoder.encode(geoCode.getAddress());
                 new Thread(new Runnable() {
                     @Override
@@ -99,14 +101,16 @@ public class CheckinActivity extends Activity implements View.OnClickListener {
                         String host = getResources().getString(R.string.url_host);
                         String port = getResources().getString(R.string.url_port);
                         String path = getResources().getString(R.string.url_path_checkin);
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        String dateTime = URLEncoder.encode(sdf.format(new Date()));
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
+                        String dateTime1 = sdf.format(new Date());
+                        String dateTime = URLEncoder.encode(dateTime1);
                         //get方式提交
                         String url = protocol + "://" + host + ":" + port + "/" + path
                                 + "?" + "username=" + MainActivity.username + "&latitude=" + latitude
                         + "&longitude=" + longitude + "&address=" + address + "&dateTime=" + dateTime
                                 + "&description=" + text + "&method=checkin";
                         Log.d("Amap", "checkinactivity->onclick()->run()===url:" + url);
+                        Log.d("Amap", "checkinactivity->onclick()->run()===datetime:" + dateTime1);
 
                         HttpJson httpJson = new HttpJson(url);
                         try {

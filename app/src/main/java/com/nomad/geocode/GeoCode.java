@@ -77,6 +77,13 @@ public class GeoCode implements GeocodeSearch.OnGeocodeSearchListener{
         RegeocodeQuery regeocodeQuery = new RegeocodeQuery(latLonPoint, 200, GeocodeSearch.AMAP);
         geocodeSearch.getFromLocationAsyn(regeocodeQuery);
     }
+    public GeoCode(Context context, LatLng latLng){
+        geocodeSearch = new GeocodeSearch(context);
+        geocodeSearch.setOnGeocodeSearchListener(this);
+        latLonPoint = new LatLonPoint(latLng.latitude, latLng.longitude);
+        RegeocodeQuery regeocodeQuery = new RegeocodeQuery(latLonPoint, 200, GeocodeSearch.AMAP);
+        geocodeSearch.getFromLocationAsyn(regeocodeQuery);
+    }
 
     /**
      * 逆地理编码回调，坐标转地址

@@ -43,7 +43,7 @@ public class ViewFriendFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        new ProgressUnity(getActivity()).showProgressDiaglog();
+        //new ProgressUnity(getActivity()).showProgressDiaglog();
         View view = inflater.inflate(R.layout.fragment_view_friend, container, false);
         listView = view.findViewById(R.id.lv_show_friends);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

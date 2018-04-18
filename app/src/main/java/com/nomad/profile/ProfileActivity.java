@@ -65,7 +65,7 @@ public class ProfileActivity extends AppCompatActivity {
                         SimpleAdapter simpleAdapter = new SimpleAdapter(ProfileActivity.this
                                 , list
                                 , R.layout.item_profile
-                                , new String[]{"description", "address", "address"}
+                                , new String[]{"dateTime", "description", "address"}
                                 , new int[]{R.id.tv_checkin_time, R.id.tv_checkin_description, R.id.tv_checkin_address}
                         );
                         listView.setAdapter(simpleAdapter);
@@ -103,9 +103,10 @@ public class ProfileActivity extends AppCompatActivity {
                             Map<String, Object> map = new HashMap<>();
                             //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                             //Date dateTime = sdf.parse((String) map.get("dateTime"));
+                            String description = (String) jsonObject.get("description");
                             map.put("address", jsonObject.get("address"));
                             map.put("dateTime", jsonObject.get("dateTime"));
-                            map.put("description", jsonObject.get("description"));
+                            map.put("description", description);
                             list.add(map);
                         }
                         handler.sendEmptyMessage(3);

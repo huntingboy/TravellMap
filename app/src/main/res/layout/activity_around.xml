@@ -7,9 +7,11 @@
     tools:context="com.nomad.around.AroundActivity">
     <ListView
         android:id="@+id/lv_show_scene"
+        android:divider="#FFCC00"
+        android:dividerHeight="4dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="10"/>
+        android:layout_weight="15"/>
     <Button
         android:id="@+id/bt_more_scene"
         android:text="@string/bt_more"

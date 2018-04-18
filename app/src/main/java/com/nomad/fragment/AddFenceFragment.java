@@ -92,6 +92,7 @@ public class AddFenceFragment extends Fragment implements View.OnClickListener, 
             aMap1 = mapView1.getMap();
         }
         aMap1.setTrafficEnabled(true);
+        aMap1.showBuildings(true);
         aMap1.showIndoorMap(true);
         UiSettings uiSettings = aMap1.getUiSettings();
         uiSettings.setAllGesturesEnabled(true);
@@ -257,4 +258,11 @@ public class AddFenceFragment extends Fragment implements View.OnClickListener, 
         super.onDestroyView();
         mapView1.onDestroy();
     }
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //在activity执行onSaveInstanceState时执行mMapView.onSaveInstanceState (outState)，保存地图当前的状态
+        mapView1.onSaveInstanceState(outState);
+    }
+
 }

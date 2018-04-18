@@ -22,6 +22,8 @@ public class GeoFenceActivity extends AppCompatActivity implements View.OnClickL
     private double latitude;
     private double longitude;
 
+    private int id; //记录当前哪个button被激活
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,14 +51,24 @@ public class GeoFenceActivity extends AppCompatActivity implements View.OnClickL
 
         switch (v.getId()) {
             case R.id.tv_tab1_fence:
-                fragment1 = new AddFenceFragment(latitude, longitude); //如果定位失败，此处的经纬度都是0
-                ft.replace(R.id.container_fence, fragment1);
+                if (id != R.id.tv_tab1_fence) {
+                    tab2.setEnabled(true);
+                    tab1.setEnabled(false);
+                    fragment1 = new AddFenceFragment(latitude, longitude); //如果定位失败，此处的经纬度都是0
+                    ft.replace(R.id.container_fence, fragment1);
+                    id = R.id.tv_tab1_fence;
+                }
                 break;
             case R.id.tv_tab2_fence:
-                if (fragment2 == null) {
-                    fragment2 = new ViewFenceFragment();
+                if (id != R.id.tv_tab2_fence) {
+                    tab1.setEnabled(true);
+                    tab2.setEnabled(false);
+                    if (fragment2 == null) {
+                        fragment2 = new ViewFenceFragment();
+                    }
+                    ft.replace(R.id.container_fence, fragment2);
+                    id = R.id.tv_tab2_fence;
                 }
-                ft.replace(R.id.container_fence, fragment2);
                 break;
         }
         ft.commit();

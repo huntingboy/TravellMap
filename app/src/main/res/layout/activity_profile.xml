@@ -3,19 +3,34 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.nomad.view.RoundImageView
-        android:layout_gravity="center"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:src="@drawable/ic_nav_head"
-        />
-    <TextView
-        android:id="@+id/tv_profile_name"
-        android:textColor="#66FF99"
+    <LinearLayout
+        android:background="@drawable/side_nav_bar"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/activity_vertical_margin"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:weightSum="1">
+        <com.nomad.view.RoundImageView
+            android:layout_gravity="center"
+            android:layout_width="64dp"
+            android:layout_height="61dp"
+            android:paddingTop="@dimen/nav_header_vertical_spacing"
+            android:src="@drawable/ic_nav_head" />
+        <TextView
+            android:id="@+id/tv_profile_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="#66FF99" />
+    </LinearLayout>
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#efda3b"
+        />
     <ListView
+        android:divider="#805e3e"
+        android:dividerHeight="4px"
         android:id="@+id/lv_show_profile"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

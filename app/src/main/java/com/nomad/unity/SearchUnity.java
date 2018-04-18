@@ -66,7 +66,7 @@ public class SearchUnity implements PoiSearch.OnPoiSearchListener{
     //city code，""代表全国
     public SearchUnity(Context context, String keyword, String cityCode, Handler handler) {
         query = new PoiSearch.Query(keyword, cityCode);
-        query.setPageSize(10);// 设置每页最多返回多少条poiitem
+        query.setPageSize(15);// todo 设置每页最多返回多少条poiitem  设置15  单击item直接退出了app
         this.context = context;
         this.handler = handler;
     }
@@ -74,7 +74,7 @@ public class SearchUnity implements PoiSearch.OnPoiSearchListener{
     //周边搜索
     public SearchUnity(String poiCode, String cityCode, Context context, Handler handler) {
         query = new PoiSearch.Query("", poiCode, cityCode);
-        query.setPageSize(10);// 设置每页最多返回多少条poiitem
+        query.setPageSize(15);// 设置每页最多返回多少条poiitem
         this.context = context;
         this.handler = handler;
     }

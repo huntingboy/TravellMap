@@ -44,7 +44,7 @@ public class ViewFenceFragment extends Fragment {
     @Override
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        new ProgressUnity(getActivity()).showProgressDiaglog();
+        //new ProgressUnity(getActivity()).showProgressDiaglog();
         View view = inflater.inflate(R.layout.fragment_view_fence, container, false);
         listView = view.findViewById(R.id.lv_show_fence);
         //根据username查询所有的围栏信息

@@ -57,7 +57,9 @@ public class MarkerUnity {
         marker.setAnimation(animation);
         marker.startAnimation();
         marker.showInfoWindow();
-        MainActivity.oldMarker = marker;
+        if (map == MainActivity.aMap) {
+            MainActivity.oldMarker = marker;
+        }
     }
 
     public void showMarkers() {

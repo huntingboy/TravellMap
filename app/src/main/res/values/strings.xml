@@ -72,6 +72,20 @@
     <string name="marker_around_hotel">周边酒店</string>
     <string name="navigation_menu_bank">银行</string>
     <string name="marker_around_bank">周边银行</string>
+    <string name="title_activity_profile">个人中心</string>
+    <string name="bt_truck">货车</string>
+    <string name="bt_cycle">自行车</string>
+    <string name="bt_bus">公交车</string>
+    <string name="bt_walk">步行</string>
+    <string name="bt_car">驾车</string>
+    <string name="title_activity_path">路径规划</string>
+    <string name="action_go">去那里</string>
+    <string name="action_comment">评论</string>
+    <string name="action_share">分享</string>
+    <string name="title_activity_comment">评论</string>
+    <string name="title_activity_path_detail">路径详情</string>
+    <string name="bt_previous"><![CDATA[<]]></string>
+    <string name="bt_next"><![CDATA[>]]></string>
 
 
 </resources>

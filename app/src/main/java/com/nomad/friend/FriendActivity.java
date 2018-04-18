@@ -18,6 +18,8 @@ public class FriendActivity extends AppCompatActivity implements View.OnClickLis
     private AddFriendFragment fragment1;
     private ViewFriendFragment fragment2;
 
+    private int id; //记录当前哪个button被激活
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,13 +44,23 @@ public class FriendActivity extends AppCompatActivity implements View.OnClickLis
 
         switch (v.getId()) {
             case R.id.tv_tab1_friend:
-                ft.replace(R.id.container_friend, fragment1);
+                if (id != R.id.tv_tab1_friend) {
+                    tab2.setEnabled(true);
+                    tab1.setEnabled(false);
+                    ft.replace(R.id.container_friend, fragment1);
+                    id = R.id.tv_tab1_friend;
+                }
                 break;
             case R.id.tv_tab2_friend:
-                if (fragment2 == null){
-                    fragment2 = new ViewFriendFragment();
+                if (id != R.id.tv_tab2_friend) {
+                    tab1.setEnabled(true);
+                    tab2.setEnabled(false);
+                    if (fragment2 == null) {
+                        fragment2 = new ViewFriendFragment();
+                    }
+                    ft.replace(R.id.container_friend, fragment2);
+                    id = R.id.tv_tab2_friend;
                 }
-                ft.replace(R.id.container_friend, fragment2);
                 break;
         }
         ft.commit();

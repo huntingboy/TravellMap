@@ -19,6 +19,7 @@
             android:drawableTop="@drawable/ic_add_friend"
             android:layout_width="0dp"
             android:layout_weight="1"
+            android:textColor="@color/btn_text_selector"
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="@string/title_tab1_friend"/>
@@ -27,6 +28,7 @@
             android:layout_width="0dp"
             android:drawableTop="@drawable/ic_view"
             android:layout_height="match_parent"
+            android:textColor="@color/btn_text_selector"
             android:layout_weight="1"
             android:text="@string/title_tab2_friend"
             android:gravity="center"/>

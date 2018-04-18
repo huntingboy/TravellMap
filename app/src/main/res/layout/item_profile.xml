@@ -1,28 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/tv_checkin_time"
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <TextView
-        android:id="@+id/tv_checkin_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
+        <com.nomad.view.RoundImageView
+            android:src="@drawable/ic_nav_head"
+            android:layout_width="70dp"
+            android:layout_height="65dp" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:textColor="#3c37bc"
+                android:id="@+id/tv_checkin_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tv_checkin_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:textStyle="bold"/>
+        </LinearLayout>
+    </LinearLayout>
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <ImageView
             android:src="@drawable/checkin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="71dp"
+            android:layout_height="51dp" />
         <TextView
             android:id="@+id/tv_checkin_address"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:gravity="center_vertical"
+            android:layout_height="match_parent" />
     </LinearLayout>
     <ImageView
         android:layout_gravity="end"

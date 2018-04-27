@@ -27,6 +27,7 @@ public class ProgressUnity {
     public void dissmissProgressDialog() {
         if (progressDialog != null) {
             progressDialog.dismiss();
+            progressDialog = null;  //此句话一定要有  不然到处都是is activity running错误
         }
     }
 }

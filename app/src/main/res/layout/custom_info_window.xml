@@ -20,6 +20,12 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent" />
+        <ImageView
+            android:id="@+id/image_around_share"
+            android:src="@drawable/ic_share"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent" />
     </LinearLayout>
     <TextView
         android:id="@+id/tv_marker_address"

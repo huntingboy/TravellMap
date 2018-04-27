@@ -29,10 +29,20 @@
         android:background="#efda3b"
         />
     <ListView
-        android:divider="#805e3e"
-        android:dividerHeight="4px"
+        android:divider="#e1dddd"
+        android:dividerHeight="5dp"
         android:id="@+id/lv_show_profile"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+    <TextView
+        android:id="@+id/empty_list_checkin"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/data_is_null"
+        android:textSize="20sp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:visibility="gone"/>
+
 
 </LinearLayout>

@@ -1,10 +1,12 @@
 package com.nomad.unity;
 
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.animation.LinearInterpolator;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
+import com.amap.api.maps.model.BitmapDescriptor;
 import com.amap.api.maps.model.CameraPosition;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
@@ -24,6 +26,7 @@ public class MarkerUnity {
     private LatLng latLng;
     private String city;
     private String address;
+    private BitmapDescriptor icon;
     private List<MarkerOptions> markerOptionsList;
     private AMap map;
 
@@ -32,6 +35,14 @@ public class MarkerUnity {
         this.city = city;
         this.latLng = latLng;
         this.address = address;
+    }
+
+    public MarkerUnity(AMap map, LatLng latLng, String city, String address, BitmapDescriptor icon) {
+        this.map = map;
+        this.city = city;
+        this.latLng = latLng;
+        this.address = address;
+        this.icon = icon;
     }
 
     public MarkerUnity(AMap map, List<MarkerOptions> markerOptionsList) {
@@ -49,6 +60,15 @@ public class MarkerUnity {
                 .draggable(false)
                 .zIndex(-1)
                 .setFlat(false));
+        if (icon != null) {
+            marker.setIcon(icon);  //假设 用户给了图片的marker都是不需要清除的
+        } else {
+            marker.setObject("记录删除"); //为了不删除定位蓝点，给所有不是定位蓝点的Marker setobject()
+            if (map == MainActivity.aMap) {
+                MainActivity.oldMarker = marker;
+            }
+        }
+
         Animation animation = new RotateAnimation(marker.getRotateAngle(),marker.getRotateAngle()+360,0,0,0);
         long duration = 1000L;
         animation.setDuration(duration);
@@ -57,9 +77,7 @@ public class MarkerUnity {
         marker.setAnimation(animation);
         marker.startAnimation();
         marker.showInfoWindow();
-        if (map == MainActivity.aMap) {
-            MainActivity.oldMarker = marker;
-        }
+
     }
 
     public void showMarkers() {
@@ -68,6 +86,7 @@ public class MarkerUnity {
             this.latLng = markerOptions.getPosition();
             this.city = markerOptions.getTitle();
             this.address = markerOptions.getSnippet();
+            this.icon = markerOptions.getIcon();
 
             Marker marker = map.addMarker(new MarkerOptions()
                     .position(latLng)
@@ -76,6 +95,12 @@ public class MarkerUnity {
                     .draggable(false)
                     .zIndex(-1)
                     .setFlat(false));
+            if (icon != null) {
+                marker.setIcon(icon);  //假设 用户给了图片的marker都是不需要清除的
+            } else {
+                marker.setObject("记录删除");
+            }
+
             Animation animation = new RotateAnimation(marker.getRotateAngle(),
                     marker.getRotateAngle()+360,0,0,0);
             long duration = 1000L;
@@ -84,6 +109,19 @@ public class MarkerUnity {
 
             marker.setAnimation(animation);
             marker.startAnimation();
+        }
+    }
+
+
+
+    public static void clearMarkers(AMap map){
+        //获取地图上所有Marker
+        List<Marker> mapScreenMarkers = map.getMapScreenMarkers();
+        for (int i = 0; i < mapScreenMarkers.size(); i++) {
+            Marker marker = mapScreenMarkers.get(i);
+            if (marker.getObject() instanceof String) {
+                marker.remove();//移除当前Marker
+            }
         }
     }
 }

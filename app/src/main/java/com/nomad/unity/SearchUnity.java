@@ -3,7 +3,9 @@ package com.nomad.unity;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
@@ -35,13 +37,14 @@ public class SearchUnity implements PoiSearch.OnPoiSearchListener{
     private Map<String, Object> map = new HashMap<>();
 
     private PoiSearch poiSearch = null;
-    private int currentPage = 0;
+    //private int currentPage = 0;
     private Context context;
     private Handler handler;
 
     private double latitude;
     private double longitude;
     Bitmap bitmap ;
+    boolean flag = false;
 
     public void setLatitude(double latitude) {
         this.latitude = latitude;
@@ -51,9 +54,9 @@ public class SearchUnity implements PoiSearch.OnPoiSearchListener{
         this.longitude = longitude;
     }
 
-    public int getCurrentPage() {
+    /*public int getCurrentPage() {
         return currentPage;
-    }
+    }*/
 
     private PoiSearch.Query  query = null;
     public Map<String, Object> getMap() {
@@ -79,26 +82,32 @@ public class SearchUnity implements PoiSearch.OnPoiSearchListener{
         this.handler = handler;
     }
 
-    public void searchAll(){
-        //new ProgressUnity(context).showProgressDiaglog();
-        query.setPageNum(currentPage++);//设置查询页码
+    public void searchAll(int currentPage, boolean flag){   // for searchactivity
+        this.flag = flag;
+        if (flag) {
+            query.setPageNum(currentPage + 1);//设置查询页码
+        } else {
+            query.setPageNum(currentPage - 1);//设置查询页码
+        }
+        query.setPageNum(currentPage);//设置查询页码
         poiSearch = new PoiSearch(context, query);
         poiSearch.setOnPoiSearchListener(this);
         poiSearch.searchPOIAsyn();
     }
 
-    //搜索景点  餐馆
-    public void searchPoi(double latitude, double longitude, int radius){
-        query.setPageNum(currentPage++);//设置查询页码
+    //搜索 景点 \ 餐馆 \ hotel \..   for aroundactivity
+    public void searchPoi(double latitude, double longitude, int radius, int currentPage, boolean flag){ //flag=true 标志下一页
+        this.flag = flag;
+        if (flag) {
+            query.setPageNum(currentPage + 1);//设置查询页码
+        } else {
+            query.setPageNum(currentPage - 1);//设置查询页码
+        }
         poiSearch = new PoiSearch(context, query);
         poiSearch.setBound(new PoiSearch.SearchBound(new LatLonPoint(latitude,
                 longitude), radius));//设置周边搜索的中心点以及半径
         poiSearch.setOnPoiSearchListener(this);
         poiSearch.searchPOIAsyn();
-        //todo 第二次点击周边崩溃  is activity running?  progressdialog.show()
-        /*if (!((Activity)context).isFinishing()) {
-            new ProgressUnity(context).showProgressDiaglog();
-        }*/
     }
 
     //异步回调的结果
@@ -111,25 +120,35 @@ public class SearchUnity implements PoiSearch.OnPoiSearchListener{
                     // 取得搜索到的poiitems有多少页
                     List<PoiItem> poiItems = poiResult.getPois();// 取得第一页的poiitem数据，页数从数字0开始
                     List<SuggestionCity> suggestionCities = poiResult.getSearchSuggestionCitys();// 当搜索不到poiitem数据时，会返回含有搜索关键字的城市信息
-                    ArrayList<HashMap<String, Object>> arrayList = new ArrayList<>();; //POI的list集合
-                    ArrayList<MarkerOptions> markerOptions = new ArrayList<>(); //POI对应的标记点选项的list集合
+                    List<Map<String, Object>> arrayList = new ArrayList<>();; //POI的list集合
+                    List<MarkerOptions> markerOptions = new ArrayList<>(); //POI对应的标记点选项的list集合
 
                     if (poiItems != null && poiItems.size() > 0) {
                         //将PoiItems的标题和内容以列表的形式填到适配器，然后给listview显示。
                         for (int j = 0; j < poiItems.size(); j++) {
                             double latitude = poiItems.get(j).getLatLonPoint().getLatitude();
                             double longitude = poiItems.get(j).getLatLonPoint().getLongitude();
-                            String city = poiItems.get(j).getCityName();
+                            String city = poiItems.get(j).getCityName() + "(" + poiItems.get(j).getProvinceCode() + ")";
                             String address = poiItems.get(j).getSnippet();
                             String name = poiItems.get(j).getTitle();
                             address = address + "  " + name;
                             int distance = poiItems.get(j).getDistance();  //不是周边搜索就返回-1
-                            //List<Photo> list = poiItems.get(j).getPhotos();
-                            //Photo photo = list.get(0);
                             Log.d("Amap", "SearchUnity->onpoisearched()===name:" + name + ", distance:" + distance /*+ ", url:" + photo.getUrl()*/);
+
+                            List<Photo> list = poiItems.get(j).getPhotos();
+                            //String photoName = "location";
+                            String photoPath = "https://raw.githubusercontent.com/StackTipsLab/Async-ListView-Image-Loader/master/app/src/main/res/drawable/placeholder.png";
+                            if (list.size() > 0) {
+                                Photo photo = list.get(0);
+                                //photoName = photo.getTitle();
+                                photoPath = photo.getUrl();
+                            }
+
+
                             /**一直在转圈
-                             * todo 新开线程+thread.join(5000)阻塞主线程;
-                             * try {
+                             * todo 新开线程+thread.join(5000)阻塞主线程; 试了 失败
+                             **/
+                             /*try {
                                 bitmap = BitmapUnity.getBitmap(photo.getUrl());
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -146,8 +165,9 @@ public class SearchUnity implements PoiSearch.OnPoiSearchListener{
                             hashMap.put("longitude", longitude);
                             hashMap.put("city", city);
                             hashMap.put("address", address);
-                            //hashMap.put("distance", distance);
                             //hashMap.put("bitmap", bitmap);
+                            //hashMap.put("photoName", photoName);
+                            hashMap.put("photoPath", photoPath);
                             arrayList.add(hashMap);
                             markerOption.position(new LatLng(latitude, longitude))
                                     .title(city)
@@ -155,24 +175,35 @@ public class SearchUnity implements PoiSearch.OnPoiSearchListener{
                                     .draggable(false)
                                     .setFlat(false)
                                     .visible(true)
-                                    .icon(BitmapDescriptorFactory.defaultMarker());
-                            //      .icon(BitmapDescriptorFactory.fromBitmap(bitmap));
+                            //        .icon(BitmapDescriptorFactory.defaultMarker());
+                                    .icon(BitmapDescriptorFactory.fromPath(photoPath));
                             markerOptions.add(markerOption);
                         }
                         map.put("arrayList", arrayList);
                         map.put("markerOptions", markerOptions);
                         //handler处理异步搜索的结果
-                        handler.sendEmptyMessage(0);
+                        Message message = new Message();
+                        message.what = 0;
+                        Bundle bundle = new Bundle();
+                        bundle.putBoolean("flag", flag);
+                        message.setData(bundle);
+                        handler.sendMessage(message);
                     } else if (suggestionCities != null && suggestionCities.size() > 0) {
+                        new ProgressUnity(context).dissmissProgressDialog();
                         showSuggestCity(suggestionCities);
                     } else {
+                        new ProgressUnity(context).dissmissProgressDialog();
                         Toast.makeText(context, "未找到结果", Toast.LENGTH_SHORT).show();
                     }
                 }
-            }else
+            }else{
+                new ProgressUnity(context).dissmissProgressDialog();
                 Toast.makeText(context, "未找到结果", Toast.LENGTH_SHORT).show();
-        }else
+            }
+        }else{
+            new ProgressUnity(context).dissmissProgressDialog();
             Toast.makeText(context, "错误代码：" + i, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

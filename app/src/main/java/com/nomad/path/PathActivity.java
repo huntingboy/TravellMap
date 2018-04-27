@@ -29,15 +29,19 @@ import com.amap.api.services.route.BusPath;
 import com.amap.api.services.route.BusStep;
 import com.amap.api.services.route.DrivePath;
 import com.amap.api.services.route.DriveStep;
+import com.amap.api.services.route.Railway;
+import com.amap.api.services.route.RailwayStationItem;
 import com.amap.api.services.route.RidePath;
 import com.amap.api.services.route.RideStep;
 import com.amap.api.services.route.RouteBusLineItem;
 import com.amap.api.services.route.RouteBusWalkItem;
+import com.amap.api.services.route.RouteRailwayItem;
 import com.amap.api.services.route.WalkPath;
 import com.amap.api.services.route.WalkStep;
 import com.nomad.travellmap.R;
 import com.nomad.unity.MarkerUnity;
 import com.nomad.unity.PathUnity;
+import com.nomad.unity.ProgressUnity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -72,7 +76,7 @@ public class PathActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_path);
-
+        new ProgressUnity(this).showProgressDiaglog();
         btCar = (Button) findViewById(R.id.bt_path_car);
         btWalk = (Button) findViewById(R.id.bt_path_walk);
         btBus = (Button) findViewById(R.id.bt_path_bus);
@@ -137,7 +141,7 @@ public class PathActivity extends AppCompatActivity implements View.OnClickListe
                 List<LatLng> pointList1;
                 float totalDistance, totalSeconds;
                 int hour, min;
-
+                new ProgressUnity(PathActivity.this).dissmissProgressDialog();
                 switch (msg.what) {
                     case 0:
                         Map<String, Object> hashMap0 = pathUnity.getMap();
@@ -192,9 +196,9 @@ public class PathActivity extends AppCompatActivity implements View.OnClickListe
                             //List<TMC> tmcList = driveStep.getTMCs();
                         }
                         pointList1.add(new LatLng(to.getLatitude(), to.getLongitude())); //终点
-                        hour = (int) (totalSeconds / 60 / 60);
-                        min = (int) ((totalSeconds - hour * 60 * 60) / 60);
-                        textView.setText("花费:" + cost + "元\n红绿灯:" + trafficLights + "个\n总距离:" + totalDistance + "米\n历时:" + hour + "小时" + min + "分钟");
+                        hour = (int)totalSeconds / 60 / 60;
+                        min = (int)totalSeconds / 60 % 60;
+                        textView.setText("花费:" + cost + "元, 红绿灯:" + trafficLights + "个\n总距离:" + totalDistance + "米\n历时:" + hour + "小时" + min + "分钟");
                         map.clear(true);
                         map.addPolyline(new PolylineOptions().addAll(pointList1).width(5).color(Color.argb(150, 1, 1, 1)));
                         map.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_location)).zIndex(-1));
@@ -251,8 +255,8 @@ public class PathActivity extends AppCompatActivity implements View.OnClickListe
                         }
                         pointList1.add(new LatLng(to.getLatitude(), to.getLongitude())); //终点
                         map.clear(true);
-                        hour = (int) (totalSeconds / 60 / 60);
-                        min = (int) ((totalSeconds - hour * 60 * 60) / 60);
+                        hour = (int)totalSeconds / 60 / 60;
+                        min = (int)totalSeconds / 60 % 60;
                         textView.setText("总距离:" + totalDistance + "米\n历时:" + hour + "小时" + min + "分钟");
                         map.addPolyline(new PolylineOptions().addAll(pointList1).width(5).color(Color.argb(150, 1, 1, 1)));
                         map.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_location)).zIndex(-1));
@@ -271,13 +275,13 @@ public class PathActivity extends AppCompatActivity implements View.OnClickListe
                         Log.d("Amap", "pathactivity->handler====totalDistance:" + totalDistance + ", totalSeconds" + totalSeconds);
                         List<BusStep> busStepList = busPath.getSteps();
                         markerOptionsList = new ArrayList<>();
-                        List<LatLng> pointList2; //存放步行段的坐标点集合
+                        List<LatLng> pointList2, pointList3; //存放步行段、铁路段的坐标点集合
                         for (BusStep busStep :
                                 busStepList) {
                             //步行段
                             pointList2 = new ArrayList<>();
                             RouteBusWalkItem routeBusWalkItem = busStep.getWalk();
-                            if (routeBusWalkItem != null) {
+                            if (routeBusWalkItem != null && routeBusWalkItem.getSteps().size() > 0) {
                                 pointList2.add(new LatLng(routeBusWalkItem.getOrigin().getLatitude(), routeBusWalkItem.getOrigin().getLongitude()));
                                 List<WalkStep> walkSteps = routeBusWalkItem.getSteps();
                                 for (WalkStep step :
@@ -297,7 +301,7 @@ public class PathActivity extends AppCompatActivity implements View.OnClickListe
                                         temp++;
                                     }
                                 }
-                                MarkerOptions markerOptions = new MarkerOptions()
+                                MarkerOptions markerOptions = new MarkerOptions() //步行段最后一个点
                                         .position(new LatLng(routeBusWalkItem.getDestination().getLatitude(), routeBusWalkItem.getDestination().getLongitude()))
                                         .title("走完了～")
                                         .snippet("步行距离：" + routeBusWalkItem.getDistance() + "米, 步行时间：" + routeBusWalkItem.getDuration() + "秒");
@@ -327,10 +331,11 @@ public class PathActivity extends AppCompatActivity implements View.OnClickListe
                                     start = sdf.format(time1.getTime());
                                     end = sdf.format(time2.getTime());
                                 }
+                                int i = 0; //记录经过的bus站点数目
                                 BusStationItem stationItem = busLineItem.getDepartureBusStation();
                                 MarkerOptions markerOptions = new MarkerOptions()  //起始站
                                         .position(new LatLng(stationItem.getLatLonPoint().getLatitude(), stationItem.getLatLonPoint().getLongitude()))
-                                        .title(busLineItem.getBusLineName() + "  此站：" + stationItem.getBusStationName() + "  共要坐" + (busLineItem.getPassStationNum() + 1) + "站")
+                                        .title(busLineItem.getBusLineName() + "  此站：" + stationItem.getBusStationName() + "  还要坐" + (busLineItem.getPassStationNum() + 1 - i++) + "站")
                                         .snippet(start + "~" + end + "  " + busLineItem.getTotalPrice() + "元");
                                 markerOptionsList.add(markerOptions);
                                 for (BusStationItem item :  //经过的站点名  不包括起始\终止点
@@ -338,14 +343,14 @@ public class PathActivity extends AppCompatActivity implements View.OnClickListe
                                     stationName = item.getBusStationName();
                                     markerOptions = new MarkerOptions()
                                             .position(new LatLng(item.getLatLonPoint().getLatitude(), item.getLatLonPoint().getLongitude()))
-                                            .title(busLineItem.getBusLineName() + "  此站：" + stationName + "  要坐" + (busLineItem.getPassStationNum() + 1) + "站")
+                                            .title(busLineItem.getBusLineName() + "  此站：" + stationName + "  还要坐" + (busLineItem.getPassStationNum() + 1 - i++) + "站")
                                             .snippet(start + "~" + end + "  " + busLineItem.getTotalPrice() + "元");
                                     markerOptionsList.add(markerOptions);
                                 }
-                                BusStationItem stationItem1 = busLineItem.getDepartureBusStation();
+                                BusStationItem stationItem1 = busLineItem.getArrivalBusStation();
                                 markerOptions = new MarkerOptions()  //终点站
                                         .position(new LatLng(stationItem1.getLatLonPoint().getLatitude(), stationItem1.getLatLonPoint().getLongitude()))
-                                        .title(busLineItem.getBusLineName() + "  此站：" + stationItem1.getBusStationName() + "  共要坐" + (busLineItem.getPassStationNum() + 1) + "站")
+                                        .title(busLineItem.getBusLineName() + "  此站：" + stationItem1.getBusStationName() + "，要下车了～")
                                         .snippet(start + "~" + end + "  " + busLineItem.getTotalPrice() + "元");
                                 markerOptionsList.add(markerOptions);
 
@@ -355,9 +360,69 @@ public class PathActivity extends AppCompatActivity implements View.OnClickListe
                                 }
                                 map.addPolyline(new PolylineOptions().addAll(pointList1).width(5).color(Color.argb(150, 1, 1, 1)));
                             }
+
+                            //铁路段
+                            RouteRailwayItem routeRailwayItem = busStep.getRailway();
+                            if (routeRailwayItem != null) {
+                                pointList3 = new ArrayList<>();
+                                List<Railway> railways = routeRailwayItem.getAlters();
+                                for (Railway railway :
+                                        railways) {
+                                    Log.d("Amap", "铁路备案：" + railway.getID() + "," + railway.getName());
+                                }
+                                String trip = routeRailwayItem.getTrip();
+//                                String type = routeRailwayItem.getType();
+                                String startStation = routeRailwayItem.getDeparturestop().getName();
+                                String startTime = routeRailwayItem.getDeparturestop().getTime();
+                                String endStation = routeRailwayItem.getArrivalstop().getName();
+                                String endTime = routeRailwayItem.getArrivalstop().getTime();
+                                String title = trip + "  " + startStation + "-" + endStation + "(" + startTime + "~" + endTime + ")"; //线路车次号 + 开始站-结束站（发车时-到车时）
+                                Log.d("Amap", "pathactivity->handler case 2->bybus->railway===火车到站信息" + endStation + ", " + endTime +
+                                        "; 火车发站信息:" + routeRailwayItem.getDeparturestop().getName() + ", " + routeRailwayItem.getDeparturestop().getTime());
+                                int time = Integer.parseInt(routeRailwayItem.getTime()); //该线路车段耗时 s
+                                hour = time / 60 / 60;
+                                min = time / 60 % 60;
+                                String address = "此站：" + startStation + ",该上车了~,车到时间：" + startTime + ", 历时：" + hour + "小时" + min + "分钟";
+                                //上车起点
+                                LatLng latLng = new LatLng(routeRailwayItem.getDeparturestop().getLocation().getLatitude(), routeRailwayItem.getDeparturestop().getLocation().getLongitude());
+                                MarkerOptions markerOptions = new MarkerOptions()
+                                        .position(latLng)
+                                        .zIndex(-1)
+                                        .title(title)
+                                        .snippet(address);
+                                markerOptionsList.add(markerOptions);
+                                pointList3.add(latLng);
+                                List<RailwayStationItem> stationItems = routeRailwayItem.getViastops(); //经过的车站(不包括起点)
+                                for (RailwayStationItem item :
+                                        stationItems) {
+                                    String stationName = item.getName();
+                                    String arrivalTime = item.getTime(); //车到站时间
+                                    latLng = new LatLng(item.getLocation().getLatitude(), item.getLocation().getLongitude());
+                                    pointList3.add(latLng);
+                                    address = "此站：" + stationName + ", 车到时间：" + arrivalTime;
+                                    markerOptions = new MarkerOptions()
+                                            .position(latLng)
+                                            .zIndex(-1)
+                                            .title(title)
+                                            .snippet(address);
+                                    markerOptionsList.add(markerOptions);
+                                }
+                                //下车终点
+                                address = "此站：" + endStation + ",该下车了~,车到时间：" + endTime + ", 历时：" + hour + "小时" + min + "分钟";
+                                latLng = new LatLng(routeRailwayItem.getArrivalstop().getLocation().getLatitude(), routeRailwayItem.getArrivalstop().getLocation().getLongitude());
+                                markerOptions = new MarkerOptions()
+                                        .position(latLng)
+                                        .zIndex(-1)
+                                        .title(title)
+                                        .snippet(address);
+                                markerOptionsList.add(markerOptions);
+                                pointList3.add(latLng);
+                                map.addPolyline(new PolylineOptions().addAll(pointList3).width(5).color(Color.argb(150, 1, 1, 1)));
+                            }
                         }
-                        hour = (int) (totalSeconds / 60 / 60);
-                        min = (int) ((totalSeconds - hour * 60 * 60) / 60);
+
+                        hour = (int)totalSeconds / 60 / 60;
+                        min = (int)totalSeconds / 60 % 60;
                         textView.setText("总距离:" + totalDistance + "米\n历时:" + hour + "小时" + min + "分钟");
                         map.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_location)).zIndex(-1));
                         map.addMarker(new MarkerOptions().position(new LatLng(to.getLatitude(), to.getLongitude())).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_dest)).zIndex(-1));
@@ -398,8 +463,8 @@ public class PathActivity extends AppCompatActivity implements View.OnClickListe
                             }
                         }
                         pointList1.add(new LatLng(to.getLatitude(), to.getLongitude())); //终点
-                        hour = (int) (totalSeconds / 60 / 60);
-                        min = (int) ((totalSeconds - hour * 60 * 60) / 60);
+                        hour = (int)totalSeconds / 60 / 60;
+                        min = (int)totalSeconds / 60 % 60;
                         textView.setText("总距离:" + totalDistance + "米\n历时:" + hour + "小时" + min + "分钟");
                         map.clear(true);
                         map.addPolyline(new PolylineOptions().addAll(pointList1).width(5).color(Color.argb(150, 1, 1, 1)));
@@ -435,6 +500,7 @@ public class PathActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
+        new ProgressUnity(this).showProgressDiaglog();
         switch (v.getId()) {
             case R.id.bt_path_car:
                 if (id != R.id.bt_path_car) {
@@ -487,6 +553,7 @@ public class PathActivity extends AppCompatActivity implements View.OnClickListe
                     i++;
                     handler.sendEmptyMessage(index);
                 } else {
+                    new ProgressUnity(this).dissmissProgressDialog();
                     Toast.makeText(this, "已经是最后一种方案～", Toast.LENGTH_SHORT).show();
                 }
                 break;
@@ -495,6 +562,7 @@ public class PathActivity extends AppCompatActivity implements View.OnClickListe
                     i--;
                     handler.sendEmptyMessage(index);
                 } else {
+                    new ProgressUnity(this).dissmissProgressDialog();
                     Toast.makeText(this, "已经是第一种方案～", Toast.LENGTH_SHORT).show();
                 }
                 break;

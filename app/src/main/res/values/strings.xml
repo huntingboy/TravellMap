@@ -25,8 +25,9 @@
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password (optional)</string>
+    <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>
+    <string name="action_weibo_sign_in">微博授权登录</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
@@ -67,7 +68,7 @@
     <string name="text_latitude">纬度：</string>
     <string name="title_activity_checkin">签到</string>
     <string name="url_path_checkin">map/CheckinServlet</string>
-    <string name="bt_more">查看更多</string>
+    <string name="bt_more">下一页</string>
     <string name="navigation_menu_hotel">酒店</string>
     <string name="marker_around_hotel">周边酒店</string>
     <string name="navigation_menu_bank">银行</string>
@@ -86,6 +87,16 @@
     <string name="title_activity_path_detail">路径详情</string>
     <string name="bt_previous"><![CDATA[<]]></string>
     <string name="bt_next"><![CDATA[>]]></string>
+    <string name="action_del">删除</string>
+    <string name="data_is_null">暂时没有数据</string>
+    <string name="url_path_comment">map/CommentServlet</string>
+    <string name="bt_comment">评论</string>
+    <string name="comment_hint">参与评论</string>
+    <string name="title_activity_message">留言</string>
+    <string name="bt_message">留言</string>
+    <string name="url_path_message">map/MessageServlet</string>
+    <string name="bt_less">上一页</string>
+    <string name="search_pre">上一页</string>
 
 
 </resources>

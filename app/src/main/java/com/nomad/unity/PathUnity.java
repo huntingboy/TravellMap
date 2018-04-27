@@ -52,7 +52,7 @@ public class PathUnity implements RouteSearch.OnRouteSearchListener {
         // fromAndTo包含路径规划的起点和终点，drivingMode表示驾车模式
         // 第三个参数表示途经点（最多支持16个），第四个参数表示避让区域（最多支持32个），第五个参数表示避让道路
         fromAndTo = new RouteSearch.FromAndTo(from, to);
-        RouteSearch.DriveRouteQuery query = new RouteSearch.DriveRouteQuery(fromAndTo, RouteSearch.DRIVING_SINGLE_DEFAULT, null, null, "");
+        RouteSearch.DriveRouteQuery query = new RouteSearch.DriveRouteQuery(fromAndTo, RouteSearch.DRIVING_MULTI_CHOICE_AVOID_CONGESTION, null, null, "");
         routeSearch.calculateDriveRouteAsyn(query);
     }
     /**
@@ -62,7 +62,7 @@ public class PathUnity implements RouteSearch.OnRouteSearchListener {
         // fromAndTo包含路径规划的起点和终点
         //初始化query对象，fromAndTo是包含起终点信息，walkMode是步行路径规划的模式
         fromAndTo = new RouteSearch.FromAndTo(from, to);
-        RouteSearch.WalkRouteQuery query = new RouteSearch.WalkRouteQuery(fromAndTo, RouteSearch.WALK_DEFAULT );
+        RouteSearch.WalkRouteQuery query = new RouteSearch.WalkRouteQuery(fromAndTo, RouteSearch.WALK_MULTI_PATH );
         routeSearch.calculateWalkRouteAsyn(query);//开始算路
     }
     /**

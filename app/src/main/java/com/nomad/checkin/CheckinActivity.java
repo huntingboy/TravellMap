@@ -16,6 +16,7 @@ import com.amap.api.maps.model.LatLng;
 import com.nomad.geocode.GeoCode;
 import com.nomad.travellmap.MainActivity;
 import com.nomad.travellmap.R;
+import com.nomad.unity.ProgressUnity;
 import com.nomad.web.HttpJson;
 
 import org.json.JSONException;
@@ -57,6 +58,7 @@ public class CheckinActivity extends Activity implements View.OnClickListener {
         handler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
+                new ProgressUnity(CheckinActivity.this).dissmissProgressDialog();
                 switch (msg.what) {
                     case 0:
                         Toast.makeText(CheckinActivity.this, "签到出错！", Toast.LENGTH_SHORT).show();
@@ -90,6 +92,7 @@ public class CheckinActivity extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.bt_ack_checkin:
+                new ProgressUnity(this).dissmissProgressDialog();
                 //1.获取text,latitude,longitude,address  2.新开线程http get方式传送json数据 3.根据返回的结果执行相应操作
                 final String text = URLEncoder.encode(editCheckin.getText().toString().trim());
                 Log.d("Amap", "checkinactivity->onclick()===text:" + text);
@@ -101,7 +104,7 @@ public class CheckinActivity extends Activity implements View.OnClickListener {
                         String host = getResources().getString(R.string.url_host);
                         String port = getResources().getString(R.string.url_port);
                         String path = getResources().getString(R.string.url_path_checkin);
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         String dateTime1 = sdf.format(new Date());
                         String dateTime = URLEncoder.encode(dateTime1);
                         //get方式提交

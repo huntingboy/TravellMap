@@ -15,6 +15,9 @@ public class Checkin {
     private String address;
     private Date dateTime;
     private String description;
+    private int approve = 0;
+    private int comment = 0;  //数据库为comments
+    private int share = 0;
 
     public Checkin(String username, double latitude, double longitude,
                    String address, Date dateTime, String description) {
@@ -82,4 +85,28 @@ public class Checkin {
     public void setDateTime(Date dateTime) {
         this.dateTime = dateTime;
     }
+    public int getApprove() {
+        return approve;
+    }
+
+    public void setApprove(int approve) {
+        this.approve = approve;
+    }
+
+    public int getComment() {
+        return comment;
+    }
+
+    public void setComment(int comment) {
+        this.comment = comment;
+    }
+
+    public int getShare() {
+        return share;
+    }
+
+    public void setShare(int share) {
+        this.share = share;
+    }
+
 }

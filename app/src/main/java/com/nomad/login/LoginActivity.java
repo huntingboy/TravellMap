@@ -33,8 +33,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.nomad.travellmap.R;
 import com.nomad.web.HttpJson;
@@ -47,6 +53,11 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import cn.sharesdk.framework.Platform;
+import cn.sharesdk.framework.PlatformActionListener;
+import cn.sharesdk.framework.ShareSDK;
+import cn.sharesdk.sina.weibo.SinaWeibo;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -65,6 +76,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      *
      */
     private int i = 0;
+    private double latitude;
+    private double longitude;
+
     private static final String[] DUMMY_CREDENTIALS = new String[]{
 
     };
@@ -78,6 +92,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,15 +115,51 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         });
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        Button weiboSignInButton = (Button) findViewById(R.id.weibo_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
             }
         });
+        weiboSignInButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Platform weibo = ShareSDK.getPlatform(SinaWeibo.NAME);
+                weibo.setPlatformActionListener(new PlatformActionListener() {
+                    @Override
+                    public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
+                        //遍历Map
+                        Iterator iterator = hashMap.entrySet().iterator();
+                        while (iterator.hasNext()) {
+                            Map.Entry entry = (Map.Entry) iterator.next();
+                            Object key = entry.getKey();
+                            Object value = entry.getValue();
+                            Log.d("Amap", "loginactivity->oncreate->onclick()->oncomplete()===key:" + key + ", value:" + value);
+                            //todo 1.得到邮箱 密码 2.edittext设置邮箱 密码  3.attemptLogin();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Platform platform, int i, Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+
+                    @Override
+                    public void onCancel(Platform platform, int i) {
+
+                    }
+                });
+                weibo.showUser(null); //执行登录，登录后在回调里面获取用户资料
+            }
+        });
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        Intent intent = getIntent();
+        latitude = intent.getDoubleExtra("latitude", 0);
+        longitude = intent.getDoubleExtra("longitude", 0);
     }
 
     private void populateAutoComplete() {
@@ -326,16 +377,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             HttpConnectionParams.setConnectionTimeout(httpParameters, 10*1000);//设置请求超时10秒
             HttpConnectionParams.setSoTimeout(httpParameters, 10*1000); //设置等待数据超时10秒
             HttpConnectionParams.setSocketBufferSize(httpParameters, 8192);
-            HttpClient httpClient = new DefaultHttpClient(httpParameters);
 
             String protocol = getResources().getString(R.string.url_protocol);
             String host = getResources().getString(R.string.url_host);
             String port = getResources().getString(R.string.url_port);
             String path = getResources().getString(R.string.url_path_user);
 
+            String dateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());  //更新登录已注册用户的位置信息和登录时间
             //get方式提交
             String url = protocol + "://" + host + ":" + port + "/" + path
-                    + "?" + "username=" + mEmail + "&password=" + mPassword + "&method=login";
+                    + "?" + "username=" + mEmail + "&password=" + mPassword +
+                    "&latitude=" + latitude + "&longitude=" + longitude + "&dateTime=" + URLEncoder.encode(dateTime) + "&method=login";
             Log.d("Amap", "get url===>" + url);
             HttpJson httpJson = new HttpJson(url);
             try {
@@ -354,10 +406,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         return true;
                     }
                 }
-            } catch (IOException e) {
+            } catch (IOException | JSONException e) {
                 e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
+                //return false;
             }
 
             /**post方式
@@ -389,7 +440,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             //get方式提交
             String url1 = protocol + "://" + host + ":" + port + "/" + path
-                    + "?" + "username=" + mEmail + "&password=" + mPassword + "&method=register";
+                    + "?" + "username=" + mEmail + "&password=" + mPassword +
+                    "&latitude=" + latitude + "&longitude=" + longitude + "&dateTime=" + URLEncoder.encode(dateTime) + "&method=register";
             Log.d("Amap", "get url1===>" + url1);
             try {
                 HttpJson httpJson1 = new HttpJson(url1);

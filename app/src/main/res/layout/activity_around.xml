@@ -7,16 +7,38 @@
     tools:context="com.nomad.around.AroundActivity">
     <ListView
         android:id="@+id/lv_show_scene"
-        android:divider="#FFCC00"
-        android:dividerHeight="4dp"
+        android:divider="#e1dddd"
+        android:dividerHeight="5dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="15"/>
-    <Button
-        android:id="@+id/bt_more_scene"
-        android:text="@string/bt_more"
+    <TextView
+        android:id="@+id/empty_list_around"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/data_is_null"
+        android:textSize="20sp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:visibility="gone"/>
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1">
+        <Button
+            android:id="@+id/bt_less_scene"
+            android:text="@string/bt_less"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"/>
+        <Button
+            android:id="@+id/bt_more_scene"
+            android:text="@string/bt_more"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            />
+
+    </LinearLayout>
 
 </LinearLayout>

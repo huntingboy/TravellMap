@@ -2,6 +2,7 @@ package com.nomad.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.Fragment;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -33,6 +34,7 @@ import com.amap.api.maps.model.animation.RotateAnimation;
 import com.nomad.geocode.GeoCode;
 import com.nomad.travellmap.MainActivity;
 import com.nomad.travellmap.R;
+import com.nomad.unity.CircleUnity;
 import com.nomad.unity.ProgressUnity;
 import com.nomad.web.HttpJson;
 
@@ -52,13 +54,16 @@ import java.util.regex.Pattern;
 @SuppressLint("ValidFragment")
 public class AddFenceFragment extends Fragment implements View.OnClickListener, AMap.OnMapClickListener {
 
+    private Context context;
     private Handler handler;
-    private double latitude;
-    private double longitude;
+    private double mlatitude;
+    private double mlongitude;
     private int radius;
 
     private EditText editLatitude;
     private EditText editLongitude;
+    private double latitude;
+    private double longitude;
     private EditText editRadius;
     private GeoCode geoCode; //为了获取逆地理编码后的地址
 
@@ -67,8 +72,8 @@ public class AddFenceFragment extends Fragment implements View.OnClickListener, 
 
     public AddFenceFragment(double latitude, double longitude) {
         super();
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.mlatitude = latitude;
+        this.mlongitude = longitude;
     }
 
     private AMap aMap1;
@@ -98,37 +103,33 @@ public class AddFenceFragment extends Fragment implements View.OnClickListener, 
         uiSettings.setAllGesturesEnabled(true);
         uiSettings.setScaleControlsEnabled(true);
         aMap1.animateCamera(CameraUpdateFactory.newCameraPosition(
-                new CameraPosition(new LatLng(latitude, longitude), 18, 30, 0)));
+                new CameraPosition(new LatLng(mlatitude, mlongitude), 18, 30, 0)));
         aMap1.setOnMapClickListener(this);
 
         handler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
+                new ProgressUnity(context).dissmissProgressDialog();
                 switch (msg.what) {
                     case 1:  //resultcode!=200
-                        Toast.makeText(getActivity(), "添加出错！", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "添加出错！", Toast.LENGTH_SHORT).show();
                         break;
                     case 2:  //io错误 json转换出错
-                        Toast.makeText(getActivity(), "网络错误！", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "网络错误！", Toast.LENGTH_SHORT).show();
                         break;
                     case 3:
-                        Toast.makeText(getActivity(), "添加失败！", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "添加失败！", Toast.LENGTH_SHORT).show();
                         break;
                     case 4:
                         //把添加成功的围栏显示到地图，仅仅显示，并不是真正的创建了一个围栏，下面的线程才是
-                        aMap1.addCircle(new CircleOptions()
-                                .center(new LatLng(latitude, longitude))
-                                .radius(radius)
-                                .fillColor(Color.argb(100, 1, 1, 1))
-                                .strokeColor(Color.argb(100, 1, 1, 1))
-                                .strokeWidth(15));
-                        Toast.makeText(getActivity(), "添加成功！", Toast.LENGTH_SHORT).show();
+                        CircleUnity.drawCircle(aMap1, latitude, longitude, radius);
+                        CircleUnity.drawCircle(MainActivity.aMap, latitude, longitude, radius);
+                        Toast.makeText(context, "添加成功！", Toast.LENGTH_SHORT).show();
                         break;
                     case 5:
-                        Toast.makeText(getActivity(), "创建围栏失败！", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "创建围栏失败！", Toast.LENGTH_SHORT).show();
                         break;
                 }
-                new ProgressUnity(getActivity()).dissmissProgressDialog();
                 super.handleMessage(msg);
             }
         };
@@ -139,23 +140,23 @@ public class AddFenceFragment extends Fragment implements View.OnClickListener, 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.bt_ack_addfence:
-                //todo   is activity running报错
-                //new ProgressUnity(getActivity()).showProgressDiaglog();
+                //is activity running报错已解决
+                new ProgressUnity(context).showProgressDiaglog();
                 //判断半径输入框是不是数字
                 Pattern p = Pattern.compile("[0-9]*");
                 String textRadius = editRadius.getText().toString();
                 Matcher m = p.matcher(textRadius);
 
                 if ("".equals(editLatitude.getText().toString().trim())) {
-                    new ProgressUnity(getActivity()).dissmissProgressDialog();
+                    new ProgressUnity(context).dissmissProgressDialog();
                     editLatitude.setError("输入有误！");
                     editLatitude.requestFocus();
                 } else if ("".equals(editLongitude.getText().toString().trim())) {
-                    new ProgressUnity(getActivity()).dissmissProgressDialog();
+                    new ProgressUnity(context).dissmissProgressDialog();
                     editLongitude.setError("输入有误！");
                     editLongitude.requestFocus();
                 } else if (!m.matches() || "".equals(textRadius)) {
-                    new ProgressUnity(getActivity()).dissmissProgressDialog();
+                    new ProgressUnity(context).dissmissProgressDialog();
                     editRadius.setError("输入有误！");
                     editRadius.requestFocus();
                 } else {
@@ -192,7 +193,6 @@ public class AddFenceFragment extends Fragment implements View.OnClickListener, 
                                     if (message != 0) { //0：添加成功 1:添加失败（e.g 围栏已经存在）
                                         handler.sendEmptyMessage(3);
                                     } else {   //数据库插入成功
-
                                         //创建自定义围栏  圆形围栏
                                         MainActivity.mGeoFenceClient.addGeoFence(new DPoint(latitude, longitude), radius, "我的围栏");
                                         GeoFenceListener fenceListenter = new GeoFenceListener() {
@@ -223,7 +223,7 @@ public class AddFenceFragment extends Fragment implements View.OnClickListener, 
 
                 break;
             case R.id.bt_cancel_addfence:
-                new ProgressUnity(getActivity()).dissmissProgressDialog();
+                new ProgressUnity(context).dissmissProgressDialog();
                 //清空地图，清空文本框
                 aMap1.clear(true);
                 editLongitude.setText("");
@@ -236,9 +236,12 @@ public class AddFenceFragment extends Fragment implements View.OnClickListener, 
     @Override
     public void onMapClick(LatLng latLng) {
         aMap1.clear(true);
-        geoCode = new GeoCode(getActivity(), latLng, aMap1);
-        editLatitude.setText(String.valueOf(latLng.latitude));
-        editLongitude.setText(String.valueOf(latLng.longitude));
+        latitude = latLng.latitude;
+        longitude = latLng.longitude;
+        geoCode = new GeoCode(context, latLng, aMap1);
+        editLatitude.setText(String.valueOf(latitude));
+        editLongitude.setText(String.valueOf(latitude));
+
     }
 
     @Override
@@ -263,6 +266,17 @@ public class AddFenceFragment extends Fragment implements View.OnClickListener, 
         super.onSaveInstanceState(outState);
         //在activity执行onSaveInstanceState时执行mMapView.onSaveInstanceState (outState)，保存地图当前的状态
         mapView1.onSaveInstanceState(outState);
+    }
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.context = context;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        context = null;
     }
 
 }

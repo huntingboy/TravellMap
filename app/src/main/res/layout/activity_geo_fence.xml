@@ -18,8 +18,10 @@
             android:id="@+id/tv_tab1_fence"
             android:layout_width="0dp"
             android:layout_weight="1"
+            android:enabled="false"
             android:layout_height="match_parent"
             android:gravity="center"
+            android:textColor="@color/btn_text_selector"
             android:drawableTop="@drawable/ic_add_fence"
             android:text="@string/title_tab1_fence"/>
         <TextView
@@ -27,6 +29,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:textColor="@color/btn_text_selector"
             android:drawableTop="@drawable/ic_view"
             android:text="@string/title_tab2_fence"
             android:gravity="center"/>

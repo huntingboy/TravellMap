@@ -19,6 +19,7 @@
             android:drawableTop="@drawable/ic_add_friend"
             android:layout_width="0dp"
             android:layout_weight="1"
+            android:enabled="false"
             android:textColor="@color/btn_text_selector"
             android:layout_height="match_parent"
             android:gravity="center"

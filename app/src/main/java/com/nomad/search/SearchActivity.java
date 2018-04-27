@@ -23,6 +23,7 @@ import com.amap.api.services.help.Inputtips;
 import com.amap.api.services.help.InputtipsQuery;
 import com.amap.api.services.help.Tip;
 import com.nomad.travellmap.R;
+import com.nomad.unity.ProgressUnity;
 import com.nomad.unity.SearchUnity;
 
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     private EditText editSearch = null;
     private Button btSearch = null;
     private Button btNext = null;
+    private Button btPre;
     private ListView lvPoi = null;
 
     private Handler handler;
@@ -47,6 +49,8 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     private ArrayList<MarkerOptions> markerOptions = null; //POI对应的标记点选项的list集合
 
     private final int RESULT_POI_OK = 1;
+    private int currentPage = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,9 +60,12 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         editSearch = (EditText) findViewById(R.id.edit_search);
         btSearch = (Button) findViewById(R.id.bt_search);
         btNext = (Button) findViewById(R.id.bt_next);
+        btPre = (Button) findViewById(R.id.bt_pre);
         lvPoi = (ListView) findViewById(R.id.lv_poi);
 
-        cityCode = getResources().getString(R.string.city_code); //"420000" 湖北 "" 全国  此处为后者
+        Intent intent = getIntent();
+        cityCode = intent.getStringExtra("cityCode");
+        //cityCode = getResources().getString(R.string.city_code); //"420000" 湖北 "" 全国  此处为后者
         editSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -82,15 +89,22 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         });
         btSearch.setOnClickListener(this);
         btNext.setOnClickListener(this);
+        btPre.setOnClickListener(this);
         lvPoi.setOnItemClickListener(this);
 
         handler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
+                new ProgressUnity(SearchActivity.this).dissmissProgressDialog();
                 //1.得到map中的arraylist和markeroptions
                 //2.显示到listview
                 switch (msg.what) {
-                    case 0:
+                    case 0:  //搜索成功
+                        if (msg.getData().getBoolean("flag")) {
+                            currentPage++;
+                        } else {
+                            currentPage--;
+                        }
                         Map<String, Object> map = searchUnity.getMap();
                         ArrayList<HashMap<String, Object>> arrayList = (ArrayList<HashMap<String, Object>>) map.get("arrayList");
                         markerOptions = (ArrayList<MarkerOptions>) map.get("markerOptions");
@@ -103,7 +117,6 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                         lvPoi.setAdapter(simpleAdapter);
                         break;
                 }
-
                 super.handleMessage(msg);
             }
         };
@@ -111,22 +124,35 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
+        new ProgressUnity(this).showProgressDiaglog();
         switch (v.getId()) {
             case R.id.bt_search:
                 //keyWord表示搜索字符串
                 //POI类别code
                 //city code，""代表全国
                 if (keyword != null) {
+                    currentPage = 0;
                     searchUnity = new SearchUnity(this, keyword, cityCode, handler);
-                    searchUnity.searchAll();
+                    searchUnity.searchAll(currentPage, true);
                 }
+                new ProgressUnity(this).dissmissProgressDialog();
                 break;
             case R.id.bt_next:
-                if (searchUnity != null && searchUnity.getCurrentPage() > 0) {
-                    searchUnity.searchAll();
+                if (searchUnity != null && currentPage > 0) {
+                    searchUnity.searchAll(currentPage, true);
                 } else {
-                    Toast.makeText(this, "你还没有搜索！", Toast.LENGTH_SHORT).show();
+                    new ProgressUnity(this).dissmissProgressDialog();
+                    Toast.makeText(this, "你还没有搜索 or 没有数据~", Toast.LENGTH_SHORT).show();
                 }
+                break;
+            case R.id.bt_pre:  // 避免越界
+                if (searchUnity != null && currentPage > 1) {
+                    searchUnity.searchAll(currentPage, false);
+                } else {
+                    new ProgressUnity(this).dissmissProgressDialog();
+                    Toast.makeText(this, "你还没有搜索 or 没有数据~", Toast.LENGTH_SHORT).show();
+                }
+                break;
         }
     }
 

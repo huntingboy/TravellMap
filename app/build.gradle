@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+//apply plugin: 'com.mob.sdk'
 
 android {
 
@@ -42,14 +43,34 @@ dependencies {
     //    })
     //    testCompile 'junit:junit:4.12'
     /*    //3D地图so及jar
-                                            compile 'com.amap.api:3dmap:latest.integration'
-                                            //定位功能
-                                            compile 'com.amap.api:location:latest.integration'
-                                            //搜索功能
-                                            compile 'com.amap.api:search:latest.integration'*/
+                                                compile 'com.amap.api:3dmap:latest.integration'
+                                                //定位功能
+                                                compile 'com.amap.api:location:latest.integration'
+                                                //搜索功能
+                                                compile 'com.amap.api:search:latest.integration'*/
     compile files('libs/junit-4.12.jar')
     compile files('libs/httpcore-4.4.4.jar')
     compile 'com.android.support:appcompat-v7:+'
     compile 'com.android.support:design:+'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile files('libs/MobCommons-2018.0418.1102.jar')
+    compile files('libs/MobTools-2018.0419.1211.jar')
+    compile files('libs/ShareSDK-Core-3.1.4.jar')
+    compile files('libs/ShareSDK-SinaWeibo-3.1.4.jar')
 }
+
+/*MobSDK {
+    appKey "25101442e1eae"
+    appSecret "37c02d3a8ae01fcfe85bb7227526951a"
+
+    ShareSDK {
+        SinaWeibo {
+            appKey "1546536885"
+            appSecret "7bb6169b7ff84c9345e6bb71ff5cc2f5"
+            callbackUri "http://www.sharesdk.cn"
+            shareByAppClient true
+        }
+
+    }
+
+}*/

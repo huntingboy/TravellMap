@@ -4,10 +4,19 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
     <ListView
-        android:divider="#FFCC00"
-        android:dividerHeight="4dp"
+        android:divider="#e1dddd"
+        android:dividerHeight="5dp"
         android:id="@+id/lv_show_fence"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+    <TextView
+        android:id="@+id/empty_list_fence"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/data_is_null"
+        android:textSize="20sp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:visibility="gone"/>
 
 </LinearLayout>

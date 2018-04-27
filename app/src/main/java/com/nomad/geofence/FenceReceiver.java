@@ -41,15 +41,15 @@ public class FenceReceiver extends BroadcastReceiver {
             Vibrator vibrator = (Vibrator) context.getSystemService(context.VIBRATOR_SERVICE);
             if (status == 1) {
                 Toast.makeText(context, "进入地理围栏~", Toast.LENGTH_LONG).show();
-                vibrator.vibrate(3000);
+                vibrator.vibrate(500);
             } else if (status == 2) {
                 // 离开围栏区域
                 Toast.makeText(context, "离开地理围栏~", Toast.LENGTH_LONG).show();
-                vibrator.vibrate(3000);
+                vibrator.vibrate(500);
             } else if (status == 3) {
                 // 围栏区域待了10分钟
                 Toast.makeText(context, "地理围栏待了十分钟~", Toast.LENGTH_LONG).show();
-                vibrator.vibrate(3000);
+                vibrator.vibrate(500);
             }
         }
     }
